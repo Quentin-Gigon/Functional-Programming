@@ -1,0 +1,28 @@
+--Problem 1 : Find the last element of a list.
+myLast [] = error "No end for empty lists!"
+myLast (x:xs) = if xs==[] then x else myLast xs
+
+--Problem 2 : Find the last but one element of a list.
+myButLast [] = error "No end for empty lists!"
+myButLast (x:xs) = if length xs==1 then x else myButLast xs
+
+--Problem 3 : Find the K'th element of a list. The first element in the list is number 1.
+elementAt :: [a]->Int->a
+elementAt [] _ = error "No elements in empty lists!" 
+elementAt a 1 = head a
+elementAt (x:xs) k = if k > length (x:xs) then error "index out of bounds!" else elementAt xs (k-1)
+
+--Problem 4 : Find the number of elements of a list.
+myLength [] = 0
+myLength [x] = 1
+myLength (x:xs) = 1 + myLength xs
+
+--Problem 5 : Reverse a list.
+myReverse [] = []
+myReverse (x:xs) = myReverse xs ++ [x] 
+
+--Problem 6 : Find out whether a list is a palindrome. A palindrome can be read forward or backward; e.g. (x a m a x).
+isPalindrome a 
+  | a == myReverse a = True
+  |otherwise = False
+  
