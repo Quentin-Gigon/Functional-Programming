@@ -1,0 +1,88 @@
+--Assignment 1
+
+module OneTimePad where
+
+otp :: [Bool] -> [Bool] -> [Bool]
+
+--a)
+{-
+otp m k = aux m k
+
+aux (m:ms) (k:ks) = (xor m k) : aux ms ks 
+aux [] [] = []
+-}
+
+xor False False = False
+xor True True = False 
+xor False True = True
+xor True False = True
+
+--implement with zip & map
+{-
+otp m k = aux m k
+
+aux m k = map (\(x,y) -> xor x y ) (zip m k)
+-}
+
+-- b) use zipwith 
+otp m k = zipWith (xor) m  k
+
+--Assignment 2
+
+module PrimeNumbers where
+
+-- (a)
+prime :: Int -> Bool
+prime 0 = False
+prime 1 = False
+prime n = if [x | x<-[1..n], x>=1 , x<=n, mod n x ==0] == [1,n] then True else False
+
+-- (b)
+primes :: Int -> [Int]
+primes n = [x | x<-[2..n], prime x == True]
+
+-- (c)
+firstPrimes :: Int -> [Int]
+firstPrimes m = take m [x | x<-[2..], prime x == True]
+
+--Assignment 3
+
+module Palindromes where
+
+palindromes :: [String] -> [String]
+palindromes l = [v++w | v<-l, w<-l, v++w == reverse(v++w)]
+
+--Assignment 4
+
+module Words where
+
+-- (a)
+split :: Char -> String -> [String]
+split sep s = aux sep s ""
+
+aux sep [] w = [w]
+aux sep (c:cs) w
+  | c == sep  = w : aux sep cs ""
+  | otherwise = aux sep cs (w ++ [c])
+
+
+-- (b)
+isSpace :: Char -> Bool
+isSpace x
+  | x == ' ' = True
+  | otherwise = False
+
+
+toWords :: String -> [String]
+toWords s = aux' sep s ""
+
+aux' sep [] w = []
+aux' sep (c:cs) w
+  | c == sep  = w : aux' sep cs ""
+  | otherwise = aux' sep cs (w ++ [c])
+
+-- (c)
+countWords :: String -> Int
+countWords = undefined
+
+
