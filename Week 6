@@ -1,0 +1,67 @@
+--Assignment 1
+
+module FileSystemEntries where
+
+data FSEntry = Folder String [FSEntry] | File String String
+
+-- (a)
+
+fFSE :: (String -> [a] -> a) -> (String -> String -> a) -> FSEntry -> a
+fFSE fFolder fFile fse = go fse
+  where
+    go(Folder s1 fses) = fFolder s1  (map go fses) 
+    go(File s1 s2) = fFile s1 s2
+
+-- (b)
+
+number :: FSEntry -> Int
+number fse = fFSE (\s1 ls -> 1+sum ls) (\s1 s2 -> 1) fse 
+
+count :: Char -> FSEntry -> Int
+count ch fse = fFSE (\s1 ls -> sum ls) (\s1 s2 -> countChar ch s2) fse 
+
+countChar :: Char -> String -> Int
+countChar _ [] = 0 -- Base case
+countChar c (ch:chs) = if c == ch
+                   then 1 + countChar c chs
+                   else countChar c chs
+-- (c)
+
+paths :: FSEntry -> [String]
+paths = undefined
+
+--Assignment 2
+
+module NQueens where
+
+-- Implement a function that generates all possible board assignments.
+
+generate :: Int -> [[Int]]
+generate n = go n n
+  where 
+    go 0 _ = [[]]
+    go iter n = [q:qs | q<-[1..n], qs <- go (iter-1) n]
+
+countdown :: Int -> [Int]
+countdown 0 = [0]
+countdown n = n:(countdown (n-1))
+
+
+-- Implement a function that tests whether a given assignment is valid.
+
+test :: [Int] -> Bool
+test = undefined
+
+naivequeens :: Int -> [[Int]]
+naivequeens n = filter test $ generate n
+
+
+{-
+  Headache of the week:
+  Implement a function that solves this n queens problem in a more efficient way
+  such that partial assignments get tested (whether they may be a valid full
+  assignment) as early as possible. 
+-}
+
+queens :: Int -> [[Int]]
+queens = undefined
