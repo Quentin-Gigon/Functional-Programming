@@ -1,0 +1,113 @@
+--Assignment 1
+-- This file is loaded automatically if you start GHCi in Code Expert.
+-- Feel free to add your own definitions!
+
+-- Computes the greatest common divisor (gcd) of two numbers.
+myGcd :: Int -> Int -> Int
+myGcd x y
+  | x == y    = x
+  | y > x     = myGcd y x
+  | otherwise = myGcd (x - y) y
+
+--(b) Generalizes myGcd a function such that  absGcd x y = myGcd x' y', where x' is the absolute value of x, and y' is the absolute value of y
+absGcd :: Int -> Int -> Int
+absGcd x y = myGcd (absolute x) (absolute y)
+
+--function that outputs absolute value of input
+absolute x
+  | x < 0 = -x
+  | otherwise = x
+
+--(c)  
+absGcdNew :: Int -> Int -> Int
+absGcdNew x y = myGcd (abs x) (abs y)
+
+--(d)
+myGcdDouble :: Double -> Double -> Double
+myGcdDouble x y
+  | x == y    = x
+  | y > x     = myGcdDouble y x
+  | otherwise = myGcdDouble (x - y) y
+  
+
+
+--Written answers to questions
+  
+--(a) i) 21
+--(a) ii) error message
+--(a) iii) infinite loop
+--(b) it terminates for negative inputs, but not for inputs with zero
+--(d) i) error
+--(d) ii) 3.6
+--(d) iii) infinite loop
+
+--Assignment 2
+
+module Complex where
+
+-- Write your implementation of complex numbers here.
+
+re :: (Double, Double) -> Double
+re (x,y) = x
+
+im :: (Double, Double) -> Double
+im (x,y) = y
+
+conj :: (Double, Double) -> (Double, Double)
+conj (x,y) = (x,(-y))
+
+add :: (Double, Double) -> (Double, Double) -> (Double, Double)
+add (a,b) (c,d) = (a+c, b+d)
+
+mult :: (Double, Double) -> (Double, Double) -> (Double, Double)
+mult (a,b) (c,d) = ((a*c) - (b*d) , (a*d) + (b*c))
+
+absv :: (Double, Double) ->  Double
+absv (x,y) = sqrt(x*x + y*y)
+
+main :: IO ()
+main = do 
+  putStrLn "Enter your complex number's real component:"
+  xChar <- getLine -- <- to assign in do block from getLine
+  let x = read(xChar) -- let to assign in do block, read to convert to str
+  putStrLn "Enter your complex number's imaginary component:"
+  yChar <- getLine -- <- to assign from getLine
+  let y = read(yChar) -- let to assign in do block, read to convert to str
+  let absVal = absv (x,y) -- compute abs val
+  putStrLn ("Your complex number's absolute value is: " ++ show(absVal)) -- use show to convert back to str
+  
+--Assignment 3
+
+module Recursion where
+
+-- Multiply two non-negative numbers. Only use addition/subtraction.
+mult :: (Int, Int) -> Int
+mult (a,0) = 0 --base case
+mult (0,b) = 0 --base case
+mult (a,b) = a + mult(a,(b-1)) --recursive case
+
+
+-- Integer part of the base 2 logarithm.
+log2 :: Int -> Int
+log2 x = if x<2 
+         then 0 -- base case 
+         else 1+log2(x `div` 2) --recursive case
+
+-- Test whether the integer is a prime number.
+isPrime :: Int -> Bool
+isPrime 0 = False --base case (gcdTest is undefined for 0)
+isPrime 1 = False --base case (else gcdTest will return True)
+isPrime x = gcdTest x x --run gcdTest to check if x is prime
+
+gcdTest :: Int -> Int -> Bool --function to check that gcd of all integers y s.t. 1<=y<x and x are 1
+gcdTest 1 y = True --base case (since gcd is undefined for 0)
+gcdTest x 1 = True --base case (since gcd is undefined for 0)
+gcdTest x y = (gcdIs1 x (y-1)) && (gcdTest x (y-1)) --recursive case, check that gcd of number to check is 1 with all numbers y s.t. 1<=y<x (i.e. it is only divisible by 1 and itself)
+ 
+
+gcdIs1 :: Int -> Int -> Bool --function to check whether gcd of two integers is 1
+gcdIs1 1 y = True --base case
+gcdIs1 x 1 = True --base case
+gcdIs1 x y = if gcd x y == 1--recursive case
+              then True
+              else False
