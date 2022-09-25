@@ -1,0 +1,73 @@
+--Assignment 1
+
+module PropLogic where
+
+-- define the data type Prop a here
+data Prop a = Var a | Not (Prop a) | And (Prop a) (Prop a) | Or (Prop a) (Prop a)
+
+foldProp a
+  :: (a->b) -- Var
+  -> (b->b) -- Not
+  -> (b->b->b) -- And
+  -> (b->b->b) -- Or
+  -> Prop a -> b
+foldProp fvar fnot fand for x = go x 
+  where 
+    go(Var a) = fvar a
+    go(Not a) = fnot go(a)
+    go(And a b) = fand go(a) go(b) 
+    go(Or a b) = for go(a) go(b) 
+
+evalProp :: (a -> Bool) -> Prop a -> Bool
+evalProp v a = foldProp v (not) (&&) (||) p
+
+propVars :: Eq a => Prop a -> [a]
+propVars p = foldProp (\x ->[x]) (id) (union) (union) p
+
+satProp :: Eq a => Prop a -> Bool
+satProp = undefined
+
+instance {- add class constraints here if needed -} Show (Prop a) where
+  show = undefined
+  
+  
+--Assignment 2
+
+module Tree where
+
+data Tree t = Leaf | Node t (Tree t) (Tree t)
+
+bfs :: Tree t -> [t]
+bfs x = traverse' [x]
+
+traverse' :: [Tree a] -> [a]
+traverse' [] = []
+traverse' ts = rootlabels ++ traverse' (concatMap children ts)
+  where
+    rootlabels = [ x | Node x _ _ <- ts]
+    children Leaf         = [] 
+    children (Node _ l r) = [l,r] 
+
+sortedTree :: Ord t => Tree t -> Bool
+sortedTree Leaf = True --BC1
+sortedTree (Node t Leaf Leaf) = True --BC2
+sortedTree (Node t (Node tl tll tlr) Leaf) = (t>tl) && (isBigger t (bfs (Node tl tll tlr))) && sortedTree (Node tl tll tlr)  --BC3
+sortedTree (Node t Leaf (Node tr trl trr)) = (t<tr) && (isSmaller t (bfs (Node tr trl trr))) && sortedTree (Node tr trl trr) --BC4
+sortedTree (Node t (Node tl tll tlr) (Node tr trl trr)) = sortedTree (Node t (Node tl tll tlr) Leaf) && sortedTree (Node t Leaf (Node tr trl trr)) --recursive case
+
+isBigger _ [] = True
+isBigger x (xs:xss) = x>xs && isBigger x xss
+
+isSmaller _ [] = True
+isSmaller x (xs:xss) = x<xs && isSmaller x xss
+
+
+
+
+
+
+
+
+
+
+
