@@ -1,0 +1,93 @@
+--Assignment 1
+
+module DFA where
+
+import Prelude hiding (Word)
+
+type State = Int
+type Alphabet a = [a]
+type DFA a = 
+  ( Alphabet a             -- alphabet
+  , State                  -- initial state
+  , State -> a -> State    -- transition function
+  , State -> Bool)         -- test for final state
+type Word a = [a]
+
+alphabet :: DFA a -> Alphabet a
+alphabet (a,b,c,d) = a
+
+initial :: DFA a -> State
+initial (a,b,c,d) = b
+
+transition :: DFA a -> (State -> a -> State)
+transition (a,b,c,d) = c
+
+finalState :: DFA a -> State -> Bool
+finalState (a,b,c,d) = d
+
+{-
+   Please indicate briefly why using accessor functions is useful.
+   
+   ...
+-}
+
+accepts :: DFA a -> Word a -> Bool
+accepts dfa w = if finalState dfa ( foldl (transition dfa) (initial dfa) w) then True 
+                else False
+                     
+
+lexicon :: Alphabet a -> Int -> [Word a]
+lexicon _ 0 = [[]]
+lexicon a n = [x:xs | x<-a , xs <- (lexicon a (n-1))]
+
+language :: DFA a -> Int -> [Word a]
+language dfa n = aux dfa (lexicon (alphabet dfa) n)
+
+aux :: DFA a -> [Word a] -> [Word a]
+aux _ [] = []
+aux dfa (w:ws) = if accepts dfa w then w:(aux dfa ws) else aux dfa ws
+
+-- Try to use map, foldl, foldr, filter and/or list comprehensions.
+
+--Assignment 2
+
+
+module ConcatMap where
+
+import Prelude hiding (sum)
+
+concatMap' f = foldr aux e
+  where aux = ((++) . f)
+        e   = []
+        
+ --Assignment 3
+ 
+ module Redefine where
+
+{-
+   In this exercise you are required to adapt the following function
+   definitions of f, g and h such that foldl, foldr, zip, zipWith, filter,
+   curry, uncurry, etc. will be used. That means, your task is to modify the
+   lines 11-12, 16-20 and 24-29.
+-}
+
+f :: [[a]] -> [a]
+f [] = []
+f (x:xs) = foldr ((++).reverse) [] (x:xs)
+
+
+g :: Eq a => [a] -> [a] -> [a]
+g [] _ = []
+g _ [] = []
+g (x:xs) (y:ys) = [x | (x,y) <- zip (x:xs) (y:ys), x==y]
+
+
+h :: [Int] -> Int
+h = aux 0
+   where
+      aux z [] = z
+      aux z (x:xs) = length [a | a<-(x:xs), even a]
+        
+        
+        
+        
