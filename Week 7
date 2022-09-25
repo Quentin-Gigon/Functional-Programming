@@ -1,0 +1,112 @@
+--Assignment 1
+
+module Misc where
+
+-- (a)
+
+match :: String -> Bool
+match s = go s [] -- where [] is an empty stack
+   where 
+      go [] [] = True --String is parsed, stack is empty
+      go [] _  = False --String is parsed, stack is not empty
+      
+      --Parenthesis is opened
+      go ('(':s) stack = go s ('(':stack)
+      
+      --Parenthesis is closed correctly
+      go (')':s) ('(':stack) = go s stack
+      
+      --Parenthesis is closed incorrectly
+      go (')':s) _ = False
+      
+      --Curly brace is opened
+      go ('{':s) stack = go s ('{':stack)
+      
+      --Curly brace is closed correctly
+      go ('}':s) ('{':stack) = go s stack
+      
+      --Curly brace is closed incorrectly
+      go ('}':s) _ = False
+      
+      --Parse char
+      go (char:chars) stack = go chars stack
+
+
+-- (b)
+
+risers :: Ord a => [a] -> [[a]]
+risers [] = []
+risers [x] = [[x]]
+risers (x:y:ys) = if x<=y
+                  then 
+
+
+--Assignment 2
+
+module Polynomials where
+
+data Monomial a = Mono Integer [a]
+ deriving (Eq, Ord, Show)
+type Poly a = [Monomial a]
+
+data SymbExpr a
+  = Var a
+  | Lit Integer 
+  | Add (SymbExpr a) (SymbExpr a)
+  | Mul (SymbExpr a) (SymbExpr a)
+  deriving Show
+
+-- (a)
+
+evalPoly :: (a -> Integer) -> Poly a -> Integer
+evalPoly fpoly poly = go fpoly poly
+  where 
+    go fpoly [] = 0
+    go fpoly (monomial:monomials) = (getInt monomial) * (foldr (*) 1 (map fpoly (getVars monomial))) + go fpoly monomials 
+      where
+        getInt  (Mono int vars) = int
+        getVars (Mono int vars) = vars
+
+-- (b)
+
+foldSymbExpr :: (a -> b) -> (Integer -> b) -> (b -> b -> b) -> (b -> b -> b) -> SymbExpr a -> b
+foldSymbExpr fvar flit fadd fmul expr = go expr 
+  where 
+    go (Var v) = fvar v
+    go (Lit int) = flit int
+    go (Add a b) = fadd (go a) (go b) 
+    go (Mul a b) = fmul (go a) (go b) 
+
+{- (c)
+
+...
+
+-}
+
+-- (d)
+
+toPoly :: SymbExpr a -> Poly a
+toPoly = foldSymbExpr undefined undefined undefined undefined
+
+--Assignment 3
+
+module Regexp where 
+
+import Parsers
+
+-- (a) define the type Regexp here
+data Regexp = Lit Char | Seq Regexp Regexp | Or Regexp Regexp | Iter Regexp
+
+
+-- (b)
+
+str2regexp :: String -> Regexp
+str2regexp = undefined
+
+-- (c)
+
+regexpParser :: String -> Parser ()
+regexpParser = undefined
+
+matches :: String -> String -> Bool
+matches = undefined
